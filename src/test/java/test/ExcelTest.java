@@ -15,7 +15,8 @@ public class ExcelTest {
     @Test
     public void reader(){
     	String file = "D:\\Datas\\201808\\15151517\\custom_4275.xlsx";
-		ExcelDataIterator iterator = new ReaderUtil(file,10,2).dataIterator();
+    	file = "D:\\1.xls";
+		ExcelDataIterator iterator = new ReaderUtil(file,1024,2).dataIterator();
 		
 		for (ExcelRow row : iterator) {
 			if(row!=null){
@@ -27,7 +28,7 @@ public class ExcelTest {
 		System.out.println("=============>>>>");
     }
     
-    @Test
+    //@Test
     public void writer(){
     	String file = "D:\\1.xls";
 		WriterUtil writer = new WriterUtil(file, "第一,再来一个,又来一个".split(","), "姓名,昵称,手机号,身高,年龄".split(","), new Class<?>[]{String.class,String.class,String.class,double.class,int.class});

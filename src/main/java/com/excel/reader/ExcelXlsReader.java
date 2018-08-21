@@ -226,18 +226,25 @@ public class ExcelXlsReader implements HSSFListener {
 				}
 			}
 			lastColumnNumber = -1;
-			if (active) {
+			if (active && sheetIndex <= 1) {
 				ExcelDataCollector.get().add(row, filePath);
 				totalRows++;
 			} else {
-				try {
-					stubWorkbook.close();
-					fs.close();
-				} catch (IOException e) {
-				}
+				close();
 			}
 			curRow++;
 			row = new ExcelRow(curRow);
+		}
+	}
+	
+	private void close() {
+		try {
+			stubWorkbook.close();
+		} catch (IOException e) {
+		}
+		try {
+			fs.close();
+		} catch (IOException e) {
 		}
 	}
 
