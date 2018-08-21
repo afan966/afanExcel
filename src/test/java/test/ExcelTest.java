@@ -15,12 +15,16 @@ public class ExcelTest {
     @Test
     public void reader(){
     	String file = "D:\\Datas\\201808\\15151517\\custom_4275.xlsx";
-		ExcelDataIterator iterator = new ReaderUtil(file,3).iterator();
+		ExcelDataIterator iterator = new ReaderUtil(file,10,2).dataIterator();
+		
 		for (ExcelRow row : iterator) {
 			if(row!=null){
 				System.out.println(row);
 			}
 		}
+		
+		System.out.println(iterator.getHeadRow());
+		System.out.println("=============>>>>");
     }
     
     @Test

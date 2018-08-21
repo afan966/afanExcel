@@ -13,6 +13,9 @@ import com.excel.reader.handler.ExcelDataQueue;
  * for (ExcelRow row : iterator) { 
  * //do something. 
  * }
+ * 第一行是表头,不作为数据处理
+ * ExcelDataIterator iterator = ReaderUtil("xxx.xls").dataIterator(); 
+ * iterator.getHeadRow();//表头
  * 
  * @author afan
  * 
@@ -49,11 +52,16 @@ public class ReaderUtil implements Closeable {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public ExcelDataIterator iterator() {
 		return iterator;
 	}
-
+	
+	public ExcelDataIterator dataIterator() {
+		iterator.getHeadRow();
+		return iterator;
+	}
+	
 	public void clear() {
 		queue.clear(file);
 	}

@@ -1,6 +1,7 @@
 package com.excel;
 
 import java.util.Iterator;
+
 import com.excel.reader.handler.ExcelDataQueue;
 
 /**
@@ -13,6 +14,7 @@ public class ExcelDataIterator implements Iterable<ExcelRow>, Iterator<ExcelRow>
 
 	private ExcelDataQueue.ExlQueue queue;
 	String name;
+	ExcelRow headRow = null;
 
 	public ExcelDataIterator(ExcelDataQueue.ExlQueue queue) {
 		this.queue = queue;
@@ -37,6 +39,9 @@ public class ExcelDataIterator implements Iterable<ExcelRow>, Iterator<ExcelRow>
 			} finally {
 				queue.notifyAll();
 			}
+			if (headRow == null) {
+				headRow = row;
+			}
 		}
 		return row;
 	}
@@ -48,6 +53,15 @@ public class ExcelDataIterator implements Iterable<ExcelRow>, Iterator<ExcelRow>
 	@Override
 	public Iterator<ExcelRow> iterator() {
 		return this;
+	}
+	
+	public ExcelRow getHeadRow(){
+		if (headRow == null) {
+			if (hasNext()) {
+				next();
+			}
+		}
+		return headRow;
 	}
 
 }
