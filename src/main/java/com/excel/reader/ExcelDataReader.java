@@ -69,6 +69,7 @@ public class ExcelDataReader {
 				try {
 					queue.add(row);
 					count++;
+					blankRow = 0;
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

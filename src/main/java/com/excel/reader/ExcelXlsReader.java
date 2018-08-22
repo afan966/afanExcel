@@ -168,7 +168,7 @@ public class ExcelXlsReader implements HSSFListener {
 			break;
 		case LabelRecord.sid:
 			LabelRecord lrec = (LabelRecord) record;
-			curRow = thisRow = lrec.getRow();
+			thisRow = lrec.getRow();
 			thisColumn = lrec.getColumn();
 			value = lrec.getValue().trim();
 			value = value.equals("") ? "" : value;
@@ -177,7 +177,7 @@ public class ExcelXlsReader implements HSSFListener {
 			break;
 		case LabelSSTRecord.sid:
 			LabelSSTRecord lsrec = (LabelSSTRecord) record;
-			curRow = thisRow = lsrec.getRow();
+			thisRow = lsrec.getRow();
 			thisColumn = lsrec.getColumn();
 			if (sstRecord == null) {
 				row.addCell(new ExcelCell(row, curRow, "", thisColumn, HSSFCell.CELL_TYPE_STRING));
@@ -190,7 +190,7 @@ public class ExcelXlsReader implements HSSFListener {
 			break;
 		case NumberRecord.sid:
 			NumberRecord numrec = (NumberRecord) record;
-			curRow = thisRow = numrec.getRow();
+			thisRow = numrec.getRow();
 			thisColumn = numrec.getColumn();
 			Double valueDouble = ((NumberRecord) numrec).getValue();
 			String formatString = formatListener.getFormatString(numrec);
@@ -211,7 +211,7 @@ public class ExcelXlsReader implements HSSFListener {
 		}
 		if (record instanceof MissingCellDummyRecord) {
 			MissingCellDummyRecord mc = (MissingCellDummyRecord) record;
-			curRow = thisRow = mc.getRow();
+			thisRow = mc.getRow();
 			thisColumn = mc.getColumn();
 			row.addCell(new ExcelCell(row, curRow, "", thisColumn, HSSFCell.CELL_TYPE_STRING));
 		}

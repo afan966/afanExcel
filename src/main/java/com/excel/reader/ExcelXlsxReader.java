@@ -98,7 +98,9 @@ public class ExcelXlsxReader extends DefaultHandler {
 				preRef = ref;
 			}
             ref = attributes.getValue("r");
-            int startCellNo = covertRowIdtoInt(ref);
+            int startCellNo = covertRowIdtoCellNo(ref);
+            curRow = covertRowIdtoRowNo(ref);
+            row.setRowNum(curRow);
 
             for (int i = 0; i < startCellNo - 1 - curCol; i++) {
                 row.addCell(new ExcelCell(row, curRow, "", curCol, HSSFCell.CELL_TYPE_STRING));
@@ -164,7 +166,6 @@ public class ExcelXlsxReader extends DefaultHandler {
 					}
 				}
 
-				curRow++;
 				curCol = 0;
 				preRef = null;
 				ref = null;
@@ -292,7 +293,7 @@ public class ExcelXlsxReader extends DefaultHandler {
 		}
 	}
 	
-	public static int covertRowIdtoInt(String rowId){
+	public static int covertRowIdtoCellNo(String rowId){
         int firstDigit = -1;
         for (int c = 0; c < rowId.length(); ++c) {
             if (Character.isDigit(rowId.charAt(c))) {
@@ -311,6 +312,16 @@ public class ExcelXlsxReader extends DefaultHandler {
             result += num;
         }
         return result;
-
+    }
+	
+	public static int covertRowIdtoRowNo(String rowId){
+        int firstDigit = -1;
+        for (int c = 0; c < rowId.length(); ++c) {
+            if (Character.isDigit(rowId.charAt(c))) {
+                firstDigit = c;
+                break;
+            }
+        }
+        return Integer.parseInt(rowId.substring(firstDigit));
     }
 }
