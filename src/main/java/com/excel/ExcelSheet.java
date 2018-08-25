@@ -1,14 +1,23 @@
 package com.excel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExcelSheet {
 
+	public static final int MAX_ROW = 65535;
+
 	private String title;// sheetName
-	private int count;// 行号
+	private int totalCount;// 总行号
 	private int sheetNo;// 编号
 	private int offset;// 偏移
 
 	private String[] headers;// 表头
 	private Class<?>[] valueTypes;// 数据类型
+
+	private List<ExcelSheet> subSheetList;// 超过MAX_ROW新建一个Sheet
+	private int currSubSheetNo = 0;// 当前子Sheet的编号
+	private int currSubSheetCount;// 当前子Sheet的行号
 
 	public ExcelSheet(String title) {
 		this.title = title;
@@ -18,6 +27,22 @@ public class ExcelSheet {
 		this.title = title;
 		this.headers = headers;
 		this.incr();
+	}
+
+	public ExcelSheet(ExcelSheet sheet) {
+		this(sheet, null);
+	}
+	
+	public ExcelSheet(ExcelSheet sheet, String title) {
+		if (title != null) {
+			this.title = title;
+		} else {
+			this.title = sheet.getTitle() + "扩展（" + sheet.getCurrSubSheetNo() + "）";
+		}
+
+		this.headers = sheet.getHeaders();
+		this.valueTypes = sheet.getValueTypes();
+		this.offset = sheet.getOffset();
 	}
 
 	public boolean hasHeader() {
@@ -45,8 +70,33 @@ public class ExcelSheet {
 		return String.class;
 	}
 
+	public void addSubSheet(ExcelSheet subSheet) {
+		if (subSheetList == null) {
+			subSheetList = new ArrayList<ExcelSheet>();
+		}
+		subSheetList.add(subSheet);
+	}
+
 	public int incr() {
-		return this.count++;
+		incrTotalCount();
+		return incrSubSheetCount();
+	}
+
+	public int incrTotalCount() {
+		return this.totalCount++;
+	}
+
+	public int incrSubSheetCount() {
+		return this.currSubSheetCount++;
+	}
+
+	public void setCount(int count) {
+		this.currSubSheetCount = count;
+		this.totalCount = count;
+	}
+
+	public void incrCurrSubSheetNo() {
+		this.currSubSheetNo++;
 	}
 
 	public String getTitle() {
@@ -57,12 +107,12 @@ public class ExcelSheet {
 		this.title = title;
 	}
 
-	public int getCount() {
-		return count;
+	public int getCurrSubSheetCount() {
+		return currSubSheetCount;
 	}
 
-	public void setCount(int count) {
-		this.count = count;
+	public void setCurrSubSheetCount(int currSubSheetCount) {
+		this.currSubSheetCount = currSubSheetCount;
 	}
 
 	public int getSheetNo() {
@@ -97,4 +147,29 @@ public class ExcelSheet {
 	public void setOffset(int offset) {
 		this.offset = offset;
 	}
+
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	public List<ExcelSheet> getSubSheetList() {
+		return subSheetList;
+	}
+
+	public void setSubSheetList(List<ExcelSheet> subSheetList) {
+		this.subSheetList = subSheetList;
+	}
+
+	public int getCurrSubSheetNo() {
+		return currSubSheetNo;
+	}
+
+	public void setCurrSubSheetNo(int currSubSheetNo) {
+		this.currSubSheetNo = currSubSheetNo;
+	}
+
 }

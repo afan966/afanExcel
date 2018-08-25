@@ -23,14 +23,15 @@ import com.excel.reader.handler.ExcelDataCollector;
 
 /**
  * SAXΩ‚ŒˆXLSX
+ * 
  * @author afan
- *
+ * 
  */
 public class ExcelXlsxReader extends DefaultHandler {
 	enum CellDataType {
 		BOOL, ERROR, FORMULA, INLINESTR, SSTINDEX, NUMBER, DATE, NULL
 	}
-	
+
 	private SharedStringsTable sst;
 	private String lastIndex;
 	private String filePath = "";
@@ -51,13 +52,13 @@ public class ExcelXlsxReader extends DefaultHandler {
 	private String preRef = null, ref = null;
 	private String maxRef = null;
 	InputStream currSheet = null;
-	
 
 	private boolean active = true;
 
 	public void markEnd() {
 		active = false;
 	}
+
 	private StylesTable stylesTable;
 
 	public int process(String filename) throws Exception {
@@ -97,16 +98,16 @@ public class ExcelXlsxReader extends DefaultHandler {
 			} else {
 				preRef = ref;
 			}
-            ref = attributes.getValue("r");
-            int startCellNo = covertRowIdtoCellNo(ref);
-            curRow = covertRowIdtoRowNo(ref);
-            row.setRowNum(curRow);
+			ref = attributes.getValue("r");
+			int startCellNo = covertRowIdtoCellNo(ref);
+			curRow = covertRowIdtoRowNo(ref);
+			row.setRowNum(curRow);
 
-            for (int i = 0; i < startCellNo - 1 - curCol; i++) {
-                row.addCell(new ExcelCell(row, curRow, "", curCol, HSSFCell.CELL_TYPE_STRING));
-            }
+			for (int i = 0; i < startCellNo - 1 - curCol; i++) {
+				row.addCell(new ExcelCell(row, curRow, "", curCol, HSSFCell.CELL_TYPE_STRING));
+			}
 
-            curCol = startCellNo - 1;
+			curCol = startCellNo - 1;
 
 			this.setNextDataType(attributes);
 		}
@@ -133,13 +134,14 @@ public class ExcelXlsxReader extends DefaultHandler {
 			checkRowIsNull(value);
 		} else if ("v".equals(name)) {
 			String value = this.getDataValue(lastIndex.trim(), "");
-//			if (!ref.equals(preRef)) {
-//                int len = countNullCell(ref, preRef);
-//				for (int i = 0; i < len; i++) {
-//                    row.addCell(new ExcelCell(row, curRow, "", curCol, HSSFCell.CELL_TYPE_STRING));
-//					curCol++;
-//				}
-//			}
+			// if (!ref.equals(preRef)) {
+			// int len = countNullCell(ref, preRef);
+			// for (int i = 0; i < len; i++) {
+			// row.addCell(new ExcelCell(row, curRow, "", curCol,
+			// HSSFCell.CELL_TYPE_STRING));
+			// curCol++;
+			// }
+			// }
 			row.addCell(new ExcelCell(row, curRow, value, curCol, HSSFCell.CELL_TYPE_STRING));
 			curCol++;
 			checkRowIsNull(value);
@@ -198,13 +200,13 @@ public class ExcelXlsxReader extends DefaultHandler {
 			XSSFCellStyle style = stylesTable.getStyleAt(styleIndex);
 			formatIndex = style.getDataFormat();
 			formatString = style.getDataFormatString();
-			if (formatString.contains("m/d/yy")) {
-				nextDataType = CellDataType.DATE;
-				formatString = "yyyy-MM-dd hh:mm:ss";
-			}
 			if (formatString == null) {
 				nextDataType = CellDataType.NULL;
 				formatString = BuiltinFormats.getBuiltinFormat(formatIndex);
+			}
+			if (formatString != null && formatString.contains("m/d/yy")) {
+				nextDataType = CellDataType.DATE;
+				formatString = "yyyy-MM-dd hh:mm:ss";
 			}
 		}
 	}
@@ -286,42 +288,42 @@ public class ExcelXlsxReader extends DefaultHandler {
 	public String getExceptionMessage() {
 		return exceptionMessage;
 	}
-	
+
 	public void checkRowIsNull(String value) {
 		if (value != null && !"".equals(value)) {
 			row.full();
 		}
 	}
-	
-	public static int covertRowIdtoCellNo(String rowId){
-        int firstDigit = -1;
-        for (int c = 0; c < rowId.length(); ++c) {
-            if (Character.isDigit(rowId.charAt(c))) {
-                firstDigit = c;
-                break;
-            }
-        }
-        String newRowId = rowId.substring(0,firstDigit);
-        int num = 0;
-        int result = 0;
-        int length = newRowId.length();
-        for(int i = 0; i < length; i++) {
-            char ch = newRowId.charAt(length - i - 1);
-            num = (int)(ch - 'A' + 1) ;
-            num *= Math.pow(26, i);
-            result += num;
-        }
-        return result;
-    }
-	
-	public static int covertRowIdtoRowNo(String rowId){
-        int firstDigit = -1;
-        for (int c = 0; c < rowId.length(); ++c) {
-            if (Character.isDigit(rowId.charAt(c))) {
-                firstDigit = c;
-                break;
-            }
-        }
-        return Integer.parseInt(rowId.substring(firstDigit));
-    }
+
+	public static int covertRowIdtoCellNo(String rowId) {
+		int firstDigit = -1;
+		for (int c = 0; c < rowId.length(); ++c) {
+			if (Character.isDigit(rowId.charAt(c))) {
+				firstDigit = c;
+				break;
+			}
+		}
+		String newRowId = rowId.substring(0, firstDigit);
+		int num = 0;
+		int result = 0;
+		int length = newRowId.length();
+		for (int i = 0; i < length; i++) {
+			char ch = newRowId.charAt(length - i - 1);
+			num = (int) (ch - 'A' + 1);
+			num *= Math.pow(26, i);
+			result += num;
+		}
+		return result;
+	}
+
+	public static int covertRowIdtoRowNo(String rowId) {
+		int firstDigit = -1;
+		for (int c = 0; c < rowId.length(); ++c) {
+			if (Character.isDigit(rowId.charAt(c))) {
+				firstDigit = c;
+				break;
+			}
+		}
+		return Integer.parseInt(rowId.substring(firstDigit));
+	}
 }
