@@ -158,7 +158,6 @@ public class WriterUtil {
 			createSheets();
 		}
 	}
-
 	public WriterUtil maxRow(int maxRow) {
 		this.dataMaxRow = maxRow;
 		return this;
@@ -212,6 +211,7 @@ public class WriterUtil {
 		}
 	}
 
+	//追加一个新的sheet
 	private void createSubSheet(ExcelSheet subSheet) {
 		OutputStream out = null;
 		FileInputStream fi = null;
@@ -248,19 +248,56 @@ public class WriterUtil {
 	public int append(List<String[]> dataset) {
 		return append(0, dataset);
 	}
-
+	
 	public int append(String sheetName, List<String[]> dataset) {
+		return append(sheetName, null, null, dataset);
+	}
+
+	public int append(String sheetName, String[] headers, Class<?>[] valueTypes, List<String[]> dataset) {
 		for (ExcelSheet excelSheet : sheets) {
 			if (sheetName.equals(excelSheet.getTitle())) {
 				return append(excelSheet, dataset);
 			}
 		}
+		
+		try {
+			//沒有sheet就生成新的
+			ExcelSheet excelSheet = createExcelSheet(sheetName, headers, valueTypes);
+			return append(excelSheet, dataset);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return 0;
+	}
+	
+	private ExcelSheet createExcelSheet(String sheetName, String[] headers, Class<?>[] valueTypes) throws IOException {
+		
+		ExcelSheet sheet = new ExcelSheet(sheetName);
+		sheet.setSheetNo(sheets.size());
+		sheet.setOffset(0);
+		if (headers != null) {
+			sheet.setHeaders(headers);
+		}else{
+			sheet.setHeaders(sheets.get(0).getHeaders());
+		}
+		if (valueTypes != null) {
+			sheet.setValueTypes(valueTypes);
+		}else{
+			sheet.setValueTypes(sheets.get(0).getValueTypes());
+		}
+
+		createSubSheet(sheet);
+		sheets.add(sheet);
+		return sheet;
 	}
 
 	public int append(int sheetNo, List<String[]> dataset) {
-		ExcelSheet excelSheet = sheets.get(sheetNo);
-		return append(excelSheet, dataset);
+		if (sheetNo >= 0 && sheetNo < sheets.size()) {
+			ExcelSheet excelSheet = sheets.get(sheetNo);
+			return append(excelSheet, dataset);
+		}
+		return 0;
 	}
 
 	private int append(ExcelSheet excelSheet, List<String[]> dataset) {
@@ -385,6 +422,9 @@ public class WriterUtil {
 						cell.setCellValue(Long.parseLong(data[i]));
 					} else if (clazz == int.class) {
 						cell.setCellValue(Integer.parseInt(data[i]));
+					} else {
+						HSSFRichTextString str = new HSSFRichTextString(data[i]);
+						cell.setCellValue(str);
 					}
 				} else {
 					HSSFRichTextString str = new HSSFRichTextString(data[i]);

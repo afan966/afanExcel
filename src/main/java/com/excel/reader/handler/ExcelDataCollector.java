@@ -54,4 +54,11 @@ public class ExcelDataCollector {
 	public void add(ExcelRow row, String name) {
 		proMap.get(name).add(row);
 	}
+	
+	public void queueClose(String name){
+		if(proMap.get(name)!=null){
+			proMap.get(name).queueClose();
+		}
+	}
+	
 }

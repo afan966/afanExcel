@@ -63,6 +63,8 @@ public class ReaderUtil implements Closeable {
 	}
 	
 	public void clear() {
+		collector.queueClose(file);
+		iterator.queueNotify();
 		queue.clear(file);
 	}
 

@@ -204,6 +204,9 @@ public class ExcelXlsxReader extends DefaultHandler {
 				nextDataType = CellDataType.NULL;
 				formatString = BuiltinFormats.getBuiltinFormat(formatIndex);
 			}
+			if (formatString == null) {
+			    formatString = "";
+            }
 			if (formatString != null && formatString.contains("m/d/yy")) {
 				nextDataType = CellDataType.DATE;
 				formatString = "yyyy-MM-dd hh:mm:ss";

@@ -99,4 +99,14 @@ public class ExcelDataReader {
 			e.printStackTrace();
 		}
 	}
+	
+	public void queueClose(){
+		if (name.toLowerCase().endsWith(XLS)) {
+			excelXls.markEnd();
+		} else if (name.toLowerCase().endsWith(XLSX)) {
+			excelXlsx.markEnd();
+		}
+		queue.markEnd();
+	}
+
 }

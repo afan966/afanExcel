@@ -63,5 +63,15 @@ public class ExcelDataIterator implements Iterable<ExcelRow>, Iterator<ExcelRow>
 		}
 		return headRow;
 	}
+	
+	public void queueNotify() {
+		synchronized (queue) {
+			try {
+			} catch (Exception e) {
+			} finally {
+				queue.notify();
+			}
+		}
+	}
 
 }

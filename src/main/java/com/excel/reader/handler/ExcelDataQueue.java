@@ -122,5 +122,9 @@ public class ExcelDataQueue {
 		public int size() {
 			return queue.size();
 		}
+		
+		public void poll(){
+			queue.poll();
+		}
 	}
 }
